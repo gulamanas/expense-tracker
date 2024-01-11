@@ -19,8 +19,8 @@ class ExpenseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> saveExpense(String title, double price) async {
-    _expenses.add(Expense(title, price, DateTime.now()));
+  Future<void> saveExpense(String title, double price, String category) async {
+    _expenses.add(Expense(title, price, category, DateTime.now()));
     await _saveExpenses();
     notifyListeners();
   }
@@ -31,9 +31,10 @@ class ExpenseProvider extends ChangeNotifier {
     await prefs.setString('expenses', data);
   }
 
-  Future<void> updateExpense(int index, String title, double price) async {
+  Future<void> updateExpense(
+      int index, String title, double price, String category) async {
     DateTime originalDate = _expenses[index].createdBy;
-    _expenses[index] = Expense(title, price, originalDate);
+    _expenses[index] = Expense(title, price, category, originalDate);
     await _saveExpenses();
     notifyListeners();
   }

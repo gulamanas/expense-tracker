@@ -3,9 +3,10 @@ import 'dart:convert';
 class Expense {
   late String title;
   late double price;
+  String? category;
   final DateTime createdBy;
 
-  Expense(this.title, this.price, this.createdBy);
+  Expense(this.title, this.price, this.category, this.createdBy);
 
   // Convert Expense list to JSON string
   static String listToJson(List<Expense> expenses) {
@@ -26,6 +27,7 @@ class Expense {
     return {
       'title': title,
       'price': price,
+      'category': category,
       'createdBy': createdBy.toIso8601String(),
     };
   }
@@ -35,6 +37,7 @@ class Expense {
     return Expense(
       json['title'],
       json['price'].toDouble(),
+      json['category'],
       DateTime.parse(json['createdBy']),
     );
   }

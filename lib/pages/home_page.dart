@@ -71,6 +71,8 @@ class _HomePageState extends State<HomePage> {
         TextEditingController(text: expense.title);
     TextEditingController priceController =
         TextEditingController(text: expense.price.toString());
+    TextEditingController categoryController =
+        TextEditingController(text: expense.category);
 
     showDialog(
       context: context,
@@ -78,6 +80,7 @@ class _HomePageState extends State<HomePage> {
         return UpdateExpenseDialog(
           titleController: titleController,
           priceController: priceController,
+          categoryController: categoryController,
           expenseIndex: index,
           onUpdate: (p0, p1) {},
         );

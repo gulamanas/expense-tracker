@@ -5,16 +5,20 @@ import 'package:provider/provider.dart';
 class UpdateExpenseDialog extends StatelessWidget {
   final TextEditingController titleController;
   final TextEditingController priceController;
+  final TextEditingController categoryController;
   final int expenseIndex;
   final Function(String, double) onUpdate;
 
-  const UpdateExpenseDialog({
+  UpdateExpenseDialog({
     Key? key,
     required this.titleController,
     required this.priceController,
+    required this.categoryController,
     required this.onUpdate,
     required this.expenseIndex,
   }) : super(key: key);
+
+  final List<String> categories = ['Food', 'Clothing', 'Utilities', 'Other'];
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +40,22 @@ class UpdateExpenseDialog extends StatelessWidget {
                 controller: priceController,
                 decoration: const InputDecoration(labelText: 'Price'),
                 keyboardType: TextInputType.number,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: DropdownButtonFormField(
+                decoration: InputDecoration(labelText: 'Category'),
+                value: categoryController.text,
+                items: categories.map((category) {
+                  return DropdownMenuItem(
+                    value: category,
+                    child: Text(category),
+                  );
+                }).toList(),
+                onChanged: (selectedCategory) {
+                  categoryController.text = selectedCategory.toString();
+                },
               ),
             ),
             Row(
@@ -64,12 +84,13 @@ class UpdateExpenseDialog extends StatelessWidget {
   Future<void> _updateExpense(BuildContext context) async {
     String title = titleController.text.trim();
     double price = double.tryParse(priceController.text.trim()) ?? 0.0;
+    String category = categoryController.text.trim();
 
     if (title.isNotEmpty && price > 0) {
       ExpenseProvider expenseProvider =
           Provider.of<ExpenseProvider>(context, listen: false);
 
-      await expenseProvider.updateExpense(expenseIndex, title, price);
+      await expenseProvider.updateExpense(expenseIndex, title, price, category);
       // ignore: use_build_context_synchronously
       Navigator.of(context).pop();
     } else {

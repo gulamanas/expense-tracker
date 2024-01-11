@@ -14,6 +14,9 @@ class AddExpenseDialog extends StatefulWidget {
 class AddExpenseDialogState extends State<AddExpenseDialog> {
   TextEditingController titleController = TextEditingController();
   TextEditingController priceController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
+
+  final List<String> categories = ['Food', 'Clothing', 'Utilities', 'Others'];
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +36,19 @@ class AddExpenseDialogState extends State<AddExpenseDialog> {
               controller: priceController,
               decoration: const InputDecoration(labelText: 'Price'),
               keyboardType: TextInputType.number,
+            ),
+            DropdownButtonFormField(
+              decoration: const InputDecoration(labelText: 'Category'),
+              value: categoryController.text,
+              items: categories.map((category) {
+                return DropdownMenuItem(
+                  value: category,
+                  child: Text(category),
+                );
+              }).toList(),
+              onChanged: (selectedCategory) {
+                categoryController.text = selectedCategory.toString();
+              },
             ),
           ],
         ),
@@ -57,12 +73,17 @@ class AddExpenseDialogState extends State<AddExpenseDialog> {
   void _saveExpense(BuildContext context) {
     String title = titleController.text.trim();
     double price = double.tryParse(priceController.text.trim()) ?? 0.0;
+    String category = categoryController.text.trim();
 
     if (title.isNotEmpty && price > 0) {
       ExpenseProvider expenseProvider =
           Provider.of<ExpenseProvider>(context, listen: false);
 
-      expenseProvider.saveExpense(title, price);
+      expenseProvider.saveExpense(
+        title,
+        price,
+        category,
+      );
 
       // Close the dialog
       Navigator.of(context).pop();
